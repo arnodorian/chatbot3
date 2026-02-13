@@ -31,13 +31,13 @@ import uuid
 # ENV CONFIG
 # =============================
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
-TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
-TWILIO_WHATSAPP_NUMBER = os.getenv("TWILIO_WHATSAPP_NUMBER")
-SUPABASE_DB_URL = os.getenv("SUPABASE_DB_URL")
-REDIS_URL = os.getenv("REDIS_URL")
+# OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+# GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+# TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
+# TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
+# TWILIO_WHATSAPP_NUMBER = os.getenv("TWILIO_WHATSAPP_NUMBER")
+# SUPABASE_DB_URL = os.getenv("SUPABASE_DB_URL")
+# REDIS_URL = os.getenv("REDIS_URL")
 
 BUFFER_DELAY = 7.0
 
@@ -56,8 +56,13 @@ openai_client = OpenAI(api_key=OPENAI_API_KEY)
 conn = psycopg.connect(SUPABASE_DB_URL)
 
 # Still needed for RAG
+# pg_engine = create_engine(
+#     SUPABASE_DB_URL,
+#     connect_args={"sslmode": "require"}
+# )
+
 pg_engine = create_engine(
-    SUPABASE_DB_URL,
+    f"postgresql+psycopg://{SUPABASE_DB_URL.split('://')[1]}",
     connect_args={"sslmode": "require"}
 )
 

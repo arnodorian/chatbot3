@@ -67,7 +67,8 @@ pg_engine = create_engine(
 )
 
 llm = ChatGoogleGenerativeAI(
-    model="gemini-2.0-flash",
+    # model="gemini-2.0-flash",
+    model="gemini-2.5-flash-lite",
     temperature=0.1,
     api_key=GEMINI_API_KEY
 )

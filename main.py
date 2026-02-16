@@ -244,10 +244,16 @@ async def handle_llm_and_reply(phone: str, merged_user_input: str):
     #     final_input,
     #     config={"configurable": {"session_id": phone}}
     # )
-    res = await runnable.ainvoke(
+    # res = runnable.invoke(
+    #     final_input,
+    #     config={"configurable": {"session_id": phone}}
+    # )
+    res = await asyncio.to_thread(
+        runnable.invoke,
         final_input,
-        config={"configurable": {"session_id": phone}}
+        config={"configurable": {"session_id": phone}},
     )
+
 
     res_content = res.content.strip()
 

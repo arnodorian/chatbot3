@@ -166,7 +166,7 @@ def get_history(phone: str):
     history = PostgresChatMessageHistory(
         table_name,
         session_id,
-        async_connection=conn
+        sync_connection=conn
     )
 
     # Inject system prompt only if new session

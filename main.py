@@ -53,7 +53,7 @@ TWILIO_FROM = TWILIO_WHATSAPP_NUMBER
 
 openai_client = OpenAI(api_key=OPENAI_API_KEY)
 
-conn = psycopg.connect(SUPABASE_DB_URL)
+# conn = psycopg.connect(SUPABASE_DB_URL)
 
 # Still needed for RAG
 # pg_engine = create_engine(
@@ -157,6 +157,12 @@ def get_history(phone: str):
     # session_id = str(uuid.uuid4()) 
     session_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, phone))
     table_name = "message_store"
+    conn = psycopg.connect(
+        SUPABASE_DB_URL,
+        autocommit=True,
+        prepare_threshold=None,  # 🔥 critical
+        sslmode="require"
+    )
     history = PostgresChatMessageHistory(
         table_name,
         session_id,
@@ -236,7 +242,7 @@ async def handle_llm_and_reply(phone: str, merged_user_input: str):
     #     final_input,
     #     config={"configurable": {"session_id": phone}}
     # )
-    res = runnable.invoke(
+    res = await runnable.ainvoke(
         final_input,
         config={"configurable": {"session_id": phone}}
     )

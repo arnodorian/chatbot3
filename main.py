@@ -153,14 +153,14 @@ Example Interactions:
 # POSTGRES MEMORY (LANGCHAIN)
 # =============================
 
-def get_history(phone: str):
+async def get_history(phone: str):
     # session_id = str(uuid.uuid4()) 
     session_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, phone))
     table_name = "message_store"
-    conn = psycopg.connect(
+    conn = await psycopg.AsyncConnection.connect(
         SUPABASE_DB_URL,
         autocommit=True,
-        prepare_threshold=None,  # 🔥 critical
+        prepare_threshold=None,  # critical for Supabase
         sslmode="require"
     )
     history = PostgresChatMessageHistory(
@@ -170,8 +170,8 @@ def get_history(phone: str):
     )
 
     # Inject system prompt only if new session
-    if len(history.messages) == 0:
-        history.add_message(SystemMessage(content=STATIC_SYSTEM_PROMPT))
+    if len(await history.aget_messages()) == 0:
+        await history.aadd_message(SystemMessage(content=STATIC_SYSTEM_PROMPT))
 
     return history
 
@@ -235,7 +235,9 @@ async def handle_llm_and_reply(phone: str, merged_user_input: str):
 
     runnable = RunnableWithMessageHistory(
         runnable=llm,
-        get_session_history=get_history
+        get_session_history=get_history,
+        input_messages_key=None,
+        history_messages_key=None,
     )
 
     # res = runnable.invoke(
